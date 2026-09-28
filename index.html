@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0f62fe">
+<title>Kapan Bisa Jemur?</title>
+<style>
+:root{
+  --bg:#eef1f6; --card:#ffffff; --text:#16202c; --muted:#68717f; --line:#e3e8ef;
+  --green:#23914f; --amber:#b98a00; --red:#cf3f3f; --grey:#8b93a1;
+  --accent:#0f62fe; --accent-soft:#e6efff;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 6px 18px rgba(16,24,40,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#10141b; --card:#1a212b; --text:#e8eef6; --muted:#98a3b3; --line:#2a313d;
+    --green:#43bd76; --amber:#dfac2e; --red:#ef6a5a; --grey:#8b93a1;
+    --accent:#6ea8ff; --accent-soft:#21304a;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.32);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+#app{max-width:560px;margin:0 auto;padding:0 12px 30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:15px;margin-top:12px}
+h2.sec{font-size:12px;font-weight:650;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:4px 0 10px}
+.ic{width:20px;height:20px;flex:none}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(10px);padding:12px 2px 9px}
+.brand h1{font-size:19px;font-weight:780;letter-spacing:-.01em}
+.sub{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12.5px;flex-wrap:wrap;margin-top:3px}
+.sub .ic{width:13px;height:13px;color:var(--accent)}
+#banner{min-height:0}
+#banner .bn{border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:10px}
+.bn.warn2{background:var(--accent-soft);border:1px solid var(--line)}
+.bn.err{background:rgba(207,63,63,.10);border:1px solid rgba(207,63,63,.35);color:var(--red)}
+.st-cerah{--stc:var(--green)}
+.st-mendung{--stc:var(--amber)}
+.st-hujan{--stc:var(--red)}
+.st-malam{--stc:var(--grey)}
+.now-top{display:flex;gap:14px;align-items:flex-start}
+.now-icon{width:62px;height:62px;color:var(--stc)}
+.now-main{flex:1;min-width:0}
+.now-status{display:flex;align-items:center;gap:9px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--stc,var(--grey))}
+.status-label{font-size:23px;font-weight:780;letter-spacing:-.01em}
+.bslot{color:var(--muted);font-size:12px;margin-top:2px}
+.reason{color:var(--muted);font-size:12.5px;margin-top:6px;line-height:1.5}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:15px}
+.metric{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px 9px}
+.metric .ic{width:14px;height:14px;color:var(--muted);vertical-align:-2px;margin-right:5px}
+.metric b{font-size:15px;font-weight:650}
+.metric b .u{font-size:10.5px;color:var(--muted);font-weight:500}
+.metric span{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+.next{display:flex;gap:6px;margin-top:13px}
+.next .ch{flex:1;border:1px solid var(--line);border-radius:11px;text-align:center;padding:6px 2px;background:var(--bg)}
+.next .h2{font-size:11px;color:var(--muted)}
+.next .ic{width:18px;height:18px;margin:2px auto;color:var(--stc)}
+.next .pp{font-size:10.5px;color:var(--muted)}
+.warn{display:flex;gap:8px;align-items:flex-start;background:rgba(185,138,0,.10);border:1px solid rgba(185,138,0,.35);border-radius:12px;padding:9px 11px;font-size:12.5px;margin-top:12px;color:var(--text)}
+.warn .ic{width:15px;height:15px;color:var(--amber);margin-top:2px}
+.note{font-size:11.5px;color:var(--muted);margin-top:10px}
+#strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.chip{flex:0 0 auto;width:56px;border:1px solid var(--line);border-radius:12px;padding:7px 4px;text-align:center;background:var(--bg)}
+.chip .h{font-size:11px;color:var(--muted)}
+.chip .ic{width:21px;height:21px;margin:3px auto;color:var(--stc)}
+.chip .dot{margin:2px auto 3px;width:7px;height:7px}
+.chip .t{font-size:12.5px;font-weight:600}
+.chip .p{font-size:10px;color:var(--muted)}
+.chip.daysep{width:auto;padding:7px 9px;color:var(--muted);font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px;background:var(--card)}
+.chip.daysep .ic{width:13px;height:13px;color:var(--muted);margin:0}
+.chip.now{border-color:var(--accent);background:var(--accent-soft)}
+.day{display:block;width:100%;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-top:8px;background:var(--bg);text-align:left}
+.day-head{display:flex;align-items:center;gap:10px}
+.day-ic{width:30px;height:30px;color:var(--stc)}
+.day-name{font-weight:680;font-size:14px}
+.day-desc{color:var(--muted);font-size:12px}
+.day-temps{margin-left:auto;text-align:right;font-size:13.5px;font-weight:640}
+.day-temps small{display:block;color:var(--muted);font-size:10.5px;font-weight:500}
+.bar{display:flex;gap:2px;margin-top:10px;height:7px}
+.bar i{flex:1;border-radius:2px;background:var(--grey);opacity:.95;min-width:0}
+.bar i.b-c{background:var(--green)}
+.bar i.b-m{background:var(--amber)}
+.bar i.b-h{background:var(--red)}
+.bar i.b-n{background:var(--grey)}
+.bar-legend{display:flex;gap:8px;margin-top:5px;font-size:10px;color:var(--muted)}
+.day-window{font-size:12.5px;font-weight:570;margin-top:8px;display:flex;align-items:center;gap:6px}
+.day-window .ic{width:13px;height:13px;color:var(--accent)}
+.day-window.no .ic{color:var(--red)}
+.day-extra{color:var(--muted);font-size:11.5px;margin-top:2px}
+details#settings summary{cursor:pointer;list-style:none;font-size:14px;font-weight:680;display:flex;align-items:center;gap:8px;user-select:none}
+details#settings summary::-webkit-details-marker{display:none}
+details#settings summary .ic{color:var(--accent)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px}
+.set-row .f{font-size:13px}
+.set-row .f small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+select,input[type=text]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:9px 10px;font-size:14px;margin-top:6px;font-family:inherit}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:620;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.switch{position:relative;width:44px;height:25px;flex:none}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.track{position:absolute;inset:0;background:var(--muted);border-radius:99px;transition:.18s}
+.track::after{content:"";position:absolute;width:19px;height:19px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.18s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.switch input:checked + .track{background:var(--green)}
+.switch input:checked + .track::after{left:22px}
+footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.7;text-align:center;padding:0 10px}
+footer a{color:var(--muted);text-decoration:underline}
+.noData{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 16px;text-align:center;color:var(--muted);font-size:13.5px;margin-top:12px}
+.loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;gap:9px;background:color-mix(in srgb,var(--bg) 65%,transparent);color:var(--muted);font-size:14px;z-index:20;backdrop-filter:blur(2px)}
+.spin{width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand">
+      <h1>Kapan Bisa Jemur?</h1>
+      <div class="sub"><span id="locLabel"></span><span id="freshness"></span></div>
+    </div>
+  </header>
+  <div id="banner"></div>
+  <main>
+    <section id="nowCard" class="card"></section>
+    <section id="stripCard" class="card">
+      <h2 class="sec">24 jam ke depan</h2>
+      <div id="strip"></div>
+    </section>
+    <section id="daysCard" class="card">
+      <h2 class="sec">7 hari ke depan</h2>
+      <div id="days"></div>
+    </section>
+  </main>
+  <details id="settings" class="card">
+    <summary><span class="ic-wrap">Pengaturan</span></summary>
+    <div class="set-wrap">
+      <div class="set-row"><div class="f">Lokasi laundry<small>Prakiraan resmi BMKG level kelurahan</small></div></div>
+      <select id="locSel"></select>
+      <div id="customRow" style="display:none">
+        <input type="text" id="adm4Input" placeholder="Kode wilayah adm4, mis. 35.71.01.1010" inputmode="numeric">
+        <div style="margin-top:8px"><button id="adm4Apply" class="btn">Gunakan kode ini</button></div>
+        <div class="note">Kode dapat dicek di data.bmkg.go.id/prakiraan-cuaca.</div>
+      </div>
+      <div class="set-row">
+        <div class="f">Open-Meteo (per jam, 7 hari)<small>Dimatikan = hanya BMKG (per 3 jam, 3 hari)</small></div>
+        <label class="switch"><input type="checkbox" id="omToggle"><span class="track"></span></label>
+      </div>
+      <div class="set-row">
+        <button id="refreshBtn" class="btn">Segarkan sekarang</button>
+        <button id="clearBtn" class="btn ghost">Hapus data tersimpan</button>
+      </div>
+      <div class="note">Sumber gratis. Open-Meteo berdasar lisensi CC BY 4.0 dan diperuntukkan penggunaan non-komersial — pertimbangkan sebelum dimatikan/dipakai untuk usaha. Lihat docs/BRIEF.md untuk detail.</div>
+    </div>
+  </details>
+  <footer>
+    Data prakiraan cuaca: BMKG — Badan Meteorologi, Klimatologi, dan Geofisika
+    (<a href="https://data.bmkg.go.id">data.bmkg.go.id</a>).
+    Prakiraan per jam tambahan: <a href="https://open-meteo.com">Open-Meteo.com</a>, data CC BY 4.0.<br>
+    Ramalan bukan jaminan. Keputusan akhir tetap mengecek langit.
+  </footer>
+</div>
+<div id="loading" class="loading hidden"><span class="spin"></span>Memuat data cuaca…</div>
+<noscript><div class="noData" style="max-width:560px;margin:12px auto">Aktifkan JavaScript untuk melihat prakiraan.</div></noscript>
+<script>
+(function(){
+"use strict";
+
+var CFG_KEY="jemurConfig", RES_KEY="jemurResult";
+var DEFAULT_CFG={adm4:"35.71.01.1010",lat:-7.7933,lon:111.9955,label:"Ngampel · Mojoroto, Kota Kediri",useOpenMeteo:true};
+var LOCS=[
+ {adm4:"35.71.01.1010",lat:-7.7933,lon:111.9955,name:"Ngampel — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1001",lat:-7.8187,lon:112.0034,name:"Bandar Lor — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1002",lat:-7.8297,lon:112.0003,name:"Bandar Kidul — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1003",lat:-7.8357,lon:112.0021,name:"Banjarmlati — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1004",lat:-7.8141,lon:111.9706,name:"Pojok — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1005",lat:-7.8034,lon:111.9795,name:"Sukorame — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1006",lat:-7.8002,lon:111.9895,name:"Bujel — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1007",lat:-7.7888,lon:111.9858,name:"Gayam — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1008",lat:-7.7811,lon:111.9991,name:"Mrican — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1009",lat:-7.7749,lon:112.0042,name:"Dermo — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1011",lat:-7.8041,lon:112.0016,name:"Mojoroto — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1012",lat:-7.8238,lon:111.9852,name:"Campurejo — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1013",lat:-7.8225,lon:111.9949,name:"Lirboyo — Mojoroto, Kota Kediri"},
+ {adm4:"35.71.01.1014",lat:-7.8336,lon:111.9880,name:"Tamanan — Mojoroto, Kota Kediri"}
+];
+var WDN=["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+var WDS={Mon:"Sen",Tue:"Sel",Wed:"Rab",Thu:"Kam",Fri:"Jum",Sat:"Sab",Sun:"Min"};
+
+var ICONS={
+ sun:'<circle cx="12" cy="12" r="3.3"/><path d="M12 2.4v2M12 19.6v2M2.4 12h2M19.6 12h2M5.2 5.2l1.5 1.5M17.3 17.3l1.5 1.5M18.8 5.2l-1.5 1.5M6.7 17.3l-1.5 1.5"/>',
+ moon:'<path d="M20 13.6A8.4 8.4 0 1 1 10.4 4a6.9 6.9 0 0 0 9.6 9.6z"/>',
+ cloud:'<path d="M7 17.4a3.8 3.8 0 0 1-.4-7.6A5.1 5.1 0 0 1 16.8 9.4a3.3 3.3 0 0 1-.3 8H7z"/>',
+ cloudy:'<path d="M7.5 17.2a3.5 3.5 0 0 1-.4-7A5 5 0 0 1 16.9 9.5a3.2 3.2 0 0 1-.4 7.7H7.5z"/><circle cx="8.6" cy="9.8" r="2"/><path d="M8.6 4.8V3M4.8 9.8H3.4M12.7 4l1.1 1.3"/>',
+ overcast:'<path d="M6.5 16.4a3.3 3.3 0 0 1-.3-6.6 4.6 4.6 0 0 1 9-1.4A3 3 0 0 1 15 16.4H6.5z"/><path d="M18.4 13a2 2 0 0 0-1.9-2.9"/>',
+ fog:'<path d="M7.5 12.6a3.2 3.2 0 0 1-.2-6.4 4.5 4.5 0 0 1 8.7.8 2.9 2.9 0 0 1-.3 5.6H7.5z"/><path d="M4.5 16.2h15M6.8 19H17"/>',
+ rain:'<path d="M7 15.3a3.7 3.7 0 0 1-.4-7.4 5.1 5.1 0 0 1 9.9 1.2A3.2 3.2 0 0 1 16.6 15H7z"/><path d="M9.2 16.8l-1 3M13 16.8l-1 3M16.8 16.8l-1 3"/>',
+ rainheavy:'<path d="M7 15.3a3.7 3.7 0 0 1-.4-7.4 5.1 5.1 0 0 1 9.9 1.2A3.2 3.2 0 0 1 16.6 15H7z"/><path d="M8.4 16.6l-.8 2.6M11.4 16.6l-.8 2.6M14.4 16.6l-.8 2.6M17.4 16.6l-.8 2.6"/>',
+ drizzle:'<path d="M7 15.3a3.7 3.7 0 0 1-.4-7.4 5.1 5.1 0 0 1 9.9 1.2A3.2 3.2 0 0 1 16.6 15H7z"/><path d="M9.6 16.6v2M14.4 16.6v2"/>',
+ thunder:'<path d="M7 15.3a3.7 3.7 0 0 1-.4-7.4 5.1 5.1 0 0 1 9.9 1.2A3.2 3.2 0 0 1 16.6 15H7z"/><path d="M12.2 14l-2.2 4h2.6l-1.4 3.4"/>',
+ drop:'<path d="M12 3.4S6 9.8 6 14.3a6 6 0 0 0 12 0C18 9.8 12 3.4 12 3.4z"/>',
+ thermo:'<path d="M10 4a2 2 0 0 1 4 0v9.7a4 4 0 1 1-4 0V4z"/><circle cx="12" cy="16.4" r="1.5"/>',
+ wind:'<path d="M3 8h9a2.5 2.5 0 1 0-2.4-3.4"/><path d="M3 12.5h13a2.2 2.2 0 1 1-2.2 3"/><path d="M3 17h7a1.8 1.8 0 1 1-1.7 2.7"/>',
+ pin:'<path d="M12 21s6-5.3 6-10a6 6 0 1 0-12 0c0 4.7 6 10 6 10z"/><circle cx="12" cy="11" r="2.2"/>',
+ refresh:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 3.5V8h-4.5"/>'
+};
+function IC(name,cls){return '<svg class="ic'+(cls?" "+cls:"")+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[name]||ICONS.cloud)+'</svg>';}
+
+function $id(id){return document.getElementById(id);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m];});}
+
+function storeCfg(c){try{localStorage.setItem(CFG_KEY,JSON.stringify(c));}catch(e){}}
+function loadCfg(){try{var r=localStorage.getItem(CFG_KEY);if(r){var c=JSON.parse(r);if(c&&c.adm4)return c;}}catch(e){}return Object.assign({},DEFAULT_CFG);}
+function storeRes(r){try{localStorage.setItem(RES_KEY,JSON.stringify(r));}catch(e){}}
+function loadRes(){try{var r=localStorage.getItem(RES_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+
+function wibParts(d){
+  var o={},f=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jakarta",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",weekday:"short",hour12:false});
+  f.formatToParts(d||new Date()).forEach(function(p){if(p.type!=="literal")o[p.type]=p.value;});
+  if(o.hour==="24")o.hour="00";
+  o.dayKey=o.year+"-"+o.month+"-"+o.day;
+  o.hourKey=o.dayKey+"T"+o.hour;
+  return o;
+}
+function fmtWib(iso){if(!iso)return "—";var p=wibParts(new Date(iso));return (WDS[p.weekday]||"")+" "+p.hour+":"+p.minute;}
+function weekdayOf(dayKey){var p=dayKey.split("-");return new Date(Date.UTC(+p[0],+p[1]-1,+p[2])).getUTCDay();}
+function dayName(dayKey){return WDN[weekdayOf(dayKey)];}
+function fmtDate(dayKey){var p=dayKey.split("-");return (+p[2])+"."+(+p[1])+".'"+String(+p[0]).slice(2);}
+
+function wmoInfo(c){
+ if(c===0)return{label:"Cerah",icon:"sun"};
+ if(c===1)return{label:"Cerah berawan",icon:"cloudy"};
+ if(c===2)return{label:"Berawan sebagian",icon:"cloud"};
+ if(c===3)return{label:"Mendung",icon:"overcast"};
+ if(c===45||c===48)return{label:"Kabut",icon:"fog"};
+ if(c===51||c===53||c===55)return{label:"Gerimis",icon:"drizzle"};
+ if(c===61)return{label:"Hujan ringan",icon:"rain"};
+ if(c===63)return{label:"Hujan sedang",icon:"rain"};
+ if(c===65)return{label:"Hujan lebat",icon:"rainheavy"};
+ if(c===80||c===81||c===82)return{label:"Hujan deras",icon:"rainheavy"};
+ if(c===95||c===96||c===99)return{label:"Badai petir",icon:"thunder"};
+ return{label:"Berawan",icon:"cloud"};
+}
+var RAIN_WMO=[51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99];
+var CLOUD_WMO=[1,2,3,45,48];
+var RE_BM_RAIN=/hujan|gerimis|petir/i;
+var RE_BM_CLOUD=/\bberawan\b|mendung|kabut|asap/i;
+
+async function fetchBMKG(adm4){
+  var url="https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4="+encodeURIComponent(adm4);
+  var r=await fetch(url,{method:"GET"});
+  if(!r.ok)throw new Error("BMKG HTTP "+r.status);
+  var j=await r.json();
+  var slots=[];
+  (j.data||[]).forEach(function(blk){
+    var c=blk&&blk.cuaca;
+    if(Array.isArray(c)){
+      c.forEach(function(inner){if(Array.isArray(inner))inner.forEach(function(s){if(s)slots.push(s);});else if(inner)slots.push(inner);});
+    }else if(c)slots.push(c);
+  });
+  return {lokasi:j.lokasi||null,slots:slots};
+}
+async function fetchOM(cfg){
+  var p=new URLSearchParams({
+    latitude:String(cfg.lat),longitude:String(cfg.lon),timezone:"Asia/Jakarta",forecast_days:"7",
+    hourly:"temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,precipitation_probability,weather_code,cloud_cover,wind_speed_10m,wind_gusts_10m,uv_index",
+    daily:"weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,precipitation_sum,precipitation_probability_max,uv_index_max,sunrise,sunset,wind_speed_10m_max"
+  });
+  var r=await fetch("https://api.open-meteo.com/v1/forecast?"+p.toString());
+  if(!r.ok)throw new Error("Open-Meteo HTTP "+r.status);
+  return r.json();
+}
+
+function bmInfo(s){
+  return {t:s.t,hu:s.hu,tp:s.tp||0,tcc:s.tcc,ws:s.ws,desc:s.weather_desc||"",descEn:s.weather_desc_en||"",analysis:s.analysis_date||null};
+}
+
+function classifyHour(e,sun){
+  var isDay=(!sun)||(e.h>=sun.sr&&e.h<sun.ss);
+  var om=e.om,bm=e.bm;
+  var omRain=om&&(RAIN_WMO.indexOf(om.wmo)>=0||om.precip>0.3||om.pop>=60);
+  var bmRain=bm&&(bm.tp>=50||RE_BM_RAIN.test(bm.desc+" "+(bm.descEn||"")));
+  if(!isDay&&!omRain&&!bmRain)return{cls:"malam",reason:"Di luar jam matahari",icon:"moon"};
+  if(omRain){
+    var r=[];
+    if(om.precip>0.3)r.push("Hujan "+om.precip.toFixed(1)+" mm per jam");
+    else if(om.pop>=60)r.push("Peluang hujan "+om.pop+"%");
+    else r.push(wmoInfo(om.wmo).label);
+    if(bm)r.push(bmRain?"BMKG: "+bm.desc:"BMKG beda: "+bm.desc);
+    return{cls:"hujan",reason:r.join(" · "),icon:"rain"};
+  }
+if(bmRain){
+    if(om&&!omRain){
+      var r2=["BMKG: "+bm.desc];
+      r2.push("Open-Meteo: cerah, peluang "+om.pop+"%");
+      return{cls:"mendung",reason:r2.join(" · "),icon:"cloudy"};
+    }
+    return{cls:"hujan",reason:"BMKG: "+bm.desc,icon:"rain"};
+  }
+  var reasons=[],cloudy=false;
+  if(om){
+    if(om.cloud>=65){cloudy=true;reasons.push("Awan "+om.cloud+"%");}
+    if(isDay&&om.rh>=82){cloudy=true;reasons.push("Kelembapan "+om.rh+"%");}
+    if(om.pop>=20&&om.pop<60){cloudy=true;reasons.push("Peluang hujan "+om.pop+"%");}
+    if(CLOUD_WMO.indexOf(om.wmo)>=0){cloudy=true;reasons.push(wmoInfo(om.wmo).label);}
+    if(reasons.length===0)reasons.push("Awan "+om.cloud+"%, peluang hujan "+om.pop+"%");
+  }
+  if(bm&&bm.desc){
+    var d=bm.desc.toLowerCase();
+    if(!cloudy&&/berawan|mendung|kabut|asap/i.test(d)&&d.indexOf("cerah berawan")<0){cloudy=true;reasons.push("BMKG: "+bm.desc);}
+    else if(cloudy&&reasons.length<2)reasons.push("BMKG: "+bm.desc);
+  }
+  if(cloudy)return{cls:"mendung",reason:reasons.join(" · "),icon:"cloud"};
+  return{cls:"cerah",reason:(reasons.length?reasons.join(" · "):"Kondisi bersih"),icon:"sun"};
+}
+
+function buildResult(cfg,bmkg,om){
+  var hours=[],hoursByDay={},sunByDay={};
+  function addHour(ent){hours.push(ent);(hoursByDay[ent.dayKey]=hoursByDay[ent.dayKey]||[]).push(ent);}
+  function findDayHour(dayKey,h){var arr=hoursByDay[dayKey];if(!arr)return null;for(var i=0;i<arr.length;i++){if(arr[i].h===h)return arr[i];}return null;}
+  if(om){
+    var H=om.hourly;
+    for(var i=0;i<H.time.length;i++){
+      addHour({dayKey:H.time[i].slice(0,10),h:+H.time[i].slice(11,13),
+        om:{wmo:H.weather_code[i],pop:H.precipitation_probability[i]||0,precip:H.precipitation[i]||0,cloud:H.cloud_cover[i]||0,rh:H.relative_humidity_2m[i]||0,t:H.temperature_2m[i],app:H.apparent_temperature[i],wind:H.wind_speed_10m[i]||0,gust:H.wind_gusts_10m[i]||0,uv:H.uv_index[i]||0},bm:null});
+    }
+    for(var j=0;j<om.daily.time.length;j++){
+      var dk=om.daily.time[j].slice(0,10);
+      sunByDay[dk]={sr:+om.daily.sunrise[j].slice(11,13),ss:+om.daily.sunset[j].slice(11,13)};
+    }
+  }
+  if(bmkg){
+    for(var d0=0;d0<bmkg.slots.length;d0++){
+      var s=bmkg.slots[d0];
+      var st=s.local_datetime?s.local_datetime.replace(" ","T"):(s.datetime?s.datetime.replace(" ","T").replace("Z",""):"");
+      if(!st)continue;
+      var start=+st.slice(11,13),dayKey=st.slice(0,10);
+      for(var hh=start;hh<=Math.min(start+2,23);hh++){
+        var ent=findDayHour(dayKey,hh);
+        if(ent)ent.bm=bmInfo(s);else addHour({dayKey:dayKey,h:hh,om:null,bm:bmInfo(s)});
+      }
+    }
+  }
+  hours.sort(function(a,b){if(a.dayKey!==b.dayKey)return a.dayKey<b.dayKey?-1:1;return a.h-b.h;});
+  hours.forEach(function(e){var sun=sunByDay[e.dayKey]||{sr:6,ss:18};var c=classifyHour(e,sun);e.cls=c.cls;e.reason=c.reason;e.icon=c.icon;});
+  var days=[],seen={};
+  hours.forEach(function(e){
+    if(seen[e.dayKey])return;
+    seen[e.dayKey]=1;
+    days.push(buildDay(e.dayKey,hoursByDay[e.dayKey],om,sunByDay[e.dayKey]));
+  });
+  return {hours:hours,days:days};
+}
+
+function bestWindow(arr){
+  var best={start:-1,len:0},cur=null;
+  for(var i=0;i<arr.length;i++){
+    if(arr[i].cls==="cerah"){if(!cur)cur={start:arr[i].h,len:1};else cur.len++;if(cur.len>best.len)best={start:cur.start,len:cur.len};}
+    else cur=null;
+  }
+  return best;
+}
+function windowLabel(bw){
+  if(bw.len===0)return{no:true,text:"Tidak ada jendela cerah hari ini"};
+  if(bw.len>=2){var e=bw.start+bw.len-1;return{no:false,text:"Jam terbaik: "+pad(bw.start)+".00–"+pad(e)+".00"};}
+  return{no:true,text:"Hanya cerah 1 jam ("+pad(bw.start)+".00) — terlalu singkat untuk jemuran"};
+}
+function pad(n){return(n<10?"0":"")+n;}
+
+function buildDay(dayKey,dayHours,om,sun){
+  var t={min:null,max:null},pop=0,precip=null,desc="",icon="cloud",di=-1;
+  if(om){for(var i=0;i<om.daily.time.length;i++){if(om.daily.time[i].slice(0,10)===dayKey){di=i;break;}}}
+  var rainy=dayHours.some(function(e){return e.cls==="hujan";});
+  if(rainy){desc="Berpotensi hujan";icon="rain";}
+  else if(di>=0){
+    var w=wmoInfo(om.daily.weather_code[di]);
+    desc=w.label;icon=w.icon;
+    t.min=Math.round(om.daily.temperature_2m_min[di]);
+    t.max=Math.round(om.daily.temperature_2m_max[di]);
+    pop=om.daily.precipitation_probability_max[di]||0;
+    precip=om.daily.precipitation_sum[di]||0;
+  }else{
+    var count={};
+    dayHours.forEach(function(e){
+      if(!e.bm)return;
+      if(e.bm.desc)count[e.bm.desc]=(count[e.bm.desc]||0)+1;
+      if(typeof e.bm.t==="number"){if(t.min===null||e.bm.t<t.min)t.min=e.bm.t;if(t.max===null||e.bm.t>t.max)t.max=e.bm.t;}
+      if(typeof e.bm.tp==="number")pop=Math.max(pop,e.bm.tp);
+    });
+    var best="",cc=0;
+    for(var n in count){if(!best||count[n]>cc){best=n;cc=count[n];}}
+    desc=best||"Berawan";
+    icon=/hujan|gerimis|petir/i.test(desc)?"rain":(/^cerah$/.test(desc.trim().toLowerCase())?"sun":/berawan/.test(desc)?"cloud":"cloud");
+    t.min=Math.round(t.min);t.max=Math.round(t.max);
+  }
+  var bw=bestWindow(dayHours);
+  return {dayKey:dayKey,desc:desc,icon:icon,t:t,pop:pop,precip:precip,bw:bw,dayHours:dayHours};
+}
+
+function nowInfo(hours){
+  var p=wibParts(),idx=-1;
+  for(var i=0;i<hours.length;i++){if(hours[i].dayKey===p.dayKey&&hours[i].h===+p.hour){idx=i;break;}}
+  if(idx<0){
+    var bj=0,bd=1e9;
+    for(var j=0;j<hours.length;j++){var d=hours[j].dayKey===p.dayKey?Math.abs(hours[j].h-+p.hour):1000;if(d<bd){bd=d;bj=j;}}
+    idx=bj;
+  }
+  var next=[];for(var k=1;k<=3&&idx+k<hours.length;k++)next.push(hours[idx+k]);
+  return {cur:hours[idx],next:next,atHour:+p.hour};
+}
+
+function renderResult(res,opts){
+  opts=opts||{};
+  var cfg=loadCfg();
+  $id("locLabel").innerHTML=IC("pin")+"<span>"+esc(cfg.label)+"</span>";
+  var mode=res.mode==="full"?"BMKG + Open-Meteo":res.mode==="om"?"Open-Meteo saja":res.mode==="bmkg"?"BMKG (per 3 jam)":"";
+  $id("freshness").textContent=(opts.stale?"Data lama · ":(mode?mode+" · ":""))+fmtWib(res.fetchedAt);
+  var bn="";
+  if(opts.stale)bn='<div class="bn err">Data belum diperbarui sejak '+fmtWib(res.fetchedAt)+'. Periksa koneksi, lalu Segarkan.</div>';
+  else if(res.mode==="bmkg")bn='<div class="bn warn2">Mode BMKG saja: data tersedia tiap 3 jam, 3 hari ke depan. Aktifkan Open-Meteo untuk detail per jam dan 7 hari.</div>';
+  else if(res.mode==="om")bn='<div class="bn warn2">Dipakai Open-Meteo saja; data BMKG tidak tersedia saat ini.</div>';
+  $id("banner").innerHTML=bn;
+  var ni=nowInfo(res.hours);
+  renderNow(ni,res);
+  renderStrip(ni,res);
+  renderDays(res);
+}
+
+function renderNow(ni,res){
+  var e=ni.cur,om=e.om,bm=e.bm;
+  var val={t:om?Math.round(om.t):(bm&&typeof bm.t==="number"?Math.round(bm.t):null)};
+  var app=om?(Math.round(om.app)):null;
+  var rh=om?Math.round(om.rh):(bm&&typeof bm.hu==="number"?Math.round(bm.hu):null);
+  var wind=om?Math.round(om.wind):(bm&&typeof bm.ws==="number"?Math.round(bm.ws):null);
+  var pop=om?Math.round(om.pop):(bm?Math.round(bm.tp):null);
+  var uv=om?Math.round(om.uv):null;
+  var bslot=e.dayKey===wibParts().dayKey?"Sekarang":dayName(e.dayKey);
+  if(!om&&bm)bslot="BMKG "+pad(e.h)+".00–"+pad(Math.min(e.h+2,23))+".00";
+  var warnTxt="";
+  for(var i=0;i<ni.next.length;i++){if(ni.next[i].cls==="hujan"){warnTxt="Hujan masuk perhitungan sekitar "+pad(ni.next[i].h)+".00 — angkat atau tunda cucian.";break;}}
+  var nextChips=ni.next.map(function(nx){
+    var label=nx.dayKey!==e.dayKey?"besok "+pad(nx.h)+".00":pad(nx.h)+".00";
+    return '<div class="ch st-'+nx.cls+'"><div class="h2">'+label+'</div>'+IC(nx.icon)+'<div class="pp">'+(nx.om?nx.om.pop+"%":"")+'</div></div>';
+  }).join("");
+  $id("nowCard").innerHTML=
+    '<div class="now-top st-'+e.cls+'">'+IC(e.icon,"now-icon")+
+    '<div class="now-main"><div class="now-status"><span class="dot"></span><span class="status-label">'+clsLabel(e.cls)+'</span></div>'+
+    '<div class="bslot">'+bslot+'</div>'+
+    '<div class="reason">'+esc(e.reason)+'</div></div></div>'+
+    '<div class="metrics">'+
+      '<div class="metric">'+IC("thermo")+'<b>'+(val.t!=null?val.t+"<span class=\"u\">°</span>":"—")+'</b><span>Suhu</span></div>'+
+      '<div class="metric">'+IC("thermo")+'<b>'+(app!=null?app+"<span class=\"u\">°</span>":"—")+'</b><span>Terasa</span></div>'+
+      '<div class="metric">'+IC("drop")+'<b>'+(rh!=null?rh+"<span class=\"u\">%</span>":"—")+'</b><span>Kelembapan</span></div>'+
+      '<div class="metric">'+IC("wind")+'<b>'+(wind!=null?wind+"<span class=\"u\">km/j</span>":"—")+'</b><span>Angin</span></div>'+
+      '<div class="metric">'+IC("rain")+'<b>'+(pop!=null?pop+"<span class=\"u\">%</span>":"—")+'</b><span>Peluang hujan</span></div>'+
+      '<div class="metric">'+IC("sun")+'<b>'+(uv!=null?uv:"—")+'</b><span>Indeks UV</span></div>'+
+    '</div>'+
+    (nextChips?'<div class="next">'+nextChips+'</div>':"")+
+    (warnTxt?'<div class="warn">'+IC("thunder")+'<span>'+warnTxt+'</span></div>':"")+
+    '<div class="note">Ramalan bukan jaminan. Cek langit sebelum menjemur.</div>';
+}
+function clsLabel(c){var m={cerah:"Cerah",mendung:"Mendung",hujan:"Hujan",malam:"Malam"};return m[c]||"—";}
+
+function renderStrip(ni,res){
+  var idx=-1,arr=res.hours;
+  for(var i=0;i<arr.length;i++){if(arr[i]===ni.cur){idx=i;break;}}
+  if(idx<0)return;
+  var chips=[],prev="",first=true;
+  for(var k=idx;k<idx+24&&k<arr.length;k++){
+    var e=arr[k];
+    if(e.dayKey!==prev){prev=e.dayKey;
+      chips.push('<div class="chip daysep">'+IC("sun")+dayName(e.dayKey)+' '+fmtDate(e.dayKey)+'</div>');
+    }
+    var label=first?"Sekarang":pad(e.h)+".00";
+    chips.push('<div class="chip st-'+e.cls+(first?" now":"")+'"><div class="h">'+label+'</div>'+IC(e.icon)+
+      '<div class="dot"></div><div class="t">'+(e.om?(Math.round(e.om.t)+"°"):"—")+'</div><div class="p">'+(e.om?e.om.pop+"%":"")+'</div></div>');
+    first=false;
+  }
+  $id("strip").innerHTML=chips.join("");
+}
+
+function renderDays(res){
+  var now=wibParts().dayKey;
+  var html=res.days.map(function(d){
+    var tS=d.t.max!=null&&d.t.min!=null?d.t.max+" / "+d.t.min+"°":"—";
+    var wl=windowLabel(d.bw);
+    var extra="Peluang hujan maks "+d.pop+"%"+(d.precip!=null?" · Hujan "+d.precip.toFixed(1)+" mm":"");
+    var barHtml="",rec="";
+    for(var h=6;h<18;h++){
+      var cls="b-n",found=null;
+      for(var j=0;j<d.dayHours.length;j++){if(d.dayHours[j].h===h){found=d.dayHours[j];break;}}
+      if(found)cls=found.cls==="cerah"?"b-c":found.cls==="mendung"?"b-m":found.cls==="hujan"?"b-h":"b-n";
+      barHtml+="<i class=\""+cls+"\"></i>";
+    }
+    return '<div class="day st-'+stOfDay(d)+'"><div class="day-head">'+IC(d.icon,"day-ic")+
+      '<div><div class="day-name">'+(d.dayKey===now?"Hari ini":dayName(d.dayKey))+' <span style="color:var(--muted);font-weight:500">'+fmtDate(d.dayKey)+'</span></div>'+
+      '<div class="day-desc">'+esc(d.desc)+' · '+extra+'</div></div>'+
+      '<div class="day-temps">'+tS+'<small>mak &amp; min</small></div></div>'+
+      '<div class="bar">'+barHtml+'</div>'+
+      '<div class="bar-legend"><span>06·07·08·09·10·11·12·13·14·15·16·17</span></div>'+
+      '<div class="day-window'+(wl.no?" no":"")+'">'+IC(wl.no?"rain":"sun")+'<span>'+esc(wl.text)+'</span></div></div>';
+  }).join("");
+  $id("days").innerHTML=html||'<div class="noData">Belum ada prakiraan untuk ditampilkan.</div>';
+}
+function stOfDay(d){
+  var red=d.dayHours.filter(function(e){return e.cls==="hujan";}).length;
+  if(d.bw.len>=2&&red===0)return "cerah";
+  if(red>0)return "hujan";
+  return "mendung";
+}
+
+function renderSettings(){
+  var cfg=loadCfg(),sel=$id("locSel"),cust=null;
+  for(var i=0;i<LOCS.length;i++){if(LOCS[i].adm4===cfg.adm4){cust=LOCS[i];break;}}
+  var opts='<option value="">Kustom (ketik kode adm4)…</option>'+LOCS.map(function(l){return '<option value="'+l.adm4+'"'+(cust&&cust.adm4===l.adm4?" selected":"")+'>'+esc(l.name)+'</option>';}).join("");
+  sel.innerHTML=opts;
+  if(!cust)sel.value="";
+  $id("omToggle").checked=cfg.useOpenMeteo!==false;
+  $id("customRow").style.display=cust?"none":"flex";
+  $id("adm4Input").value=cust?"":(cfg.adm4||"");
+}
+function applyCfgUI(cfg){
+  document.title="Kapan Bisa Jemur? — "+cfg.label.split(" · ")[0];
+}
+function showLoading(b){$id("loading").classList.toggle("hidden",!b);}
+function renderError(msg){
+  $id("nowCard").innerHTML='<div class="noData">'+esc(msg)+'</div>';
+  $id("stripCard").style.display="none";
+  $id("daysCard").style.display="none";
+  $id("banner").innerHTML='<div class="bn err">Tidak ada data. Periksa koneksi internet lalu Segarkan.</div>';
+}
+function normalRender(){$id("stripCard").style.display="";$id("daysCard").style.display="";}
+
+function refresh(){
+  var cfg=loadCfg();
+  showLoading(true);
+  Promise.allSettled([
+    fetchBMKG(cfg.adm4),
+    cfg.useOpenMeteo!==false?fetchOM(cfg):Promise.reject(new Error("dinonaktifkan"))
+  ]).then(function(out){
+    var bmkg=out[0].status==="fulfilled"?out[0].value:null;
+    var om=cfg.useOpenMeteo!==false?(out[1].status==="fulfilled"?out[1].value:null):null;
+    showLoading(false);
+    if(!bmkg&&!om){
+      var r0=loadRes();
+      if(r0&&r0.result){normalRender();renderResult(r0.result,{stale:true});$id("banner").innerHTML='<div class="bn err">Kedua sumber data gagal dijangkau. Menampilkan data terakhir.</div>';}
+      else renderError("Kedua sumber data gagal dijangkau. Periksa koneksi internet.");
+      return;
+    }
+    var result=buildResult(cfg,bmkg,om);
+    if(!result.hours.length){renderError("Sumber data tidak mengembalikan prakiraan.");return;}
+    result.fetchedAt=new Date().toISOString();
+    result.mode=om?(bmkg?"full":"om"):"bmkg";
+    result.analysisDate=null;
+    if(bmkg){for(var i=0;i<bmkg.slots.length;i++){if(bmkg.slots[i].analysis_date){result.analysisDate=bmkg.slots[i].analysis_date;break;}}}
+    storeRes({result:result,fetchedAt:result.fetchedAt});
+    normalRender();
+    renderResult(result,{stale:false});
+  }).catch(function(err){
+    showLoading(false);
+    var r1=loadRes();
+    if(r1&&r1.result){normalRender();renderResult(r1.result,{stale:true});$id("banner").innerHTML='<div class="bn err">Gagal memuat ('+esc(err.message)+'). Menampilkan data terakhir.</div>';}
+    else renderError("Terjadi kesalahan: "+esc(err.message));
+  });
+}
+
+function bindEvents(){
+  $id("locSel").addEventListener("change",function(){
+    var v=this.value,cust=null;
+    for(var i=0;i<LOCS.length;i++){if(LOCS[i].adm4===v){cust=LOCS[i];break;}}
+    if(!cust){$id("customRow").style.display="flex";return;}
+    $id("customRow").style.display="none";
+    var c=loadCfg();c.adm4=v;c.lat=cust.lat;c.lon=cust.lon;c.label=cust.name.replace(" — ", " · ");
+    storeCfg(c);applyCfgUI(c);refresh();
+  });
+  $id("adm4Apply").addEventListener("click",async function(){
+    var v=$id("adm4Input").value.trim();
+    if(!v)return;
+    var b=$id("adm4Apply");b.disabled=true;showLoading(true);
+    try{
+      var j=await fetchBMKG(v),loc=j.lokasi;
+      if(!loc||!j.slots.length)throw new Error("Kode tidak dikenali");
+      var c=loadCfg();
+      c.adm4=v;c.lat=loc.lat;c.lon=loc.lon;c.label=(loc.desa||("Wilayah "+v))+" · "+(loc.kecamatan||"")+", "+(loc.kotkab||"");
+      storeCfg(c);applyCfgUI(c);renderSettings();refresh();
+    }catch(err){
+      $id("banner").innerHTML='<div class="bn err">'+esc(err.message)+'. Gunakan pola mis. 35.71.01.1010.</div>';
+    }finally{
+      b.disabled=false;showLoading(false);
+    }
+  });
+  $id("omToggle").addEventListener("change",function(){
+    var c=loadCfg();c.useOpenMeteo=this.checked;storeCfg(c);refresh();
+  });
+  $id("refreshBtn").addEventListener("click",refresh);
+  $id("clearBtn").addEventListener("click",function(){
+    try{localStorage.removeItem(CFG_KEY);localStorage.removeItem(RES_KEY);}catch(e){}
+    location.reload();
+  });
+}
+
+function boot(){
+  renderSettings();
+  var cfg=loadCfg();
+  applyCfgUI(cfg);
+  var cached=loadRes(),now=Date.now();
+  var fresh=false;
+  if(cached&&cached.result&&cached.fetchedAt){
+    var age=now-new Date(cached.fetchedAt).getTime();
+    fresh=age<30*60*1000;
+    if(fresh){normalRender();renderResult(cached.result,{stale:false});}
+    else{normalRender();renderResult(cached.result,{stale:true,age:age});}
+  }else if(cached&&cached.result){normalRender();renderResult(cached.result,{stale:true});}
+  if(!fresh)refresh();
+}
+
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);
+else boot();
+bindEvents();
+})();
+</script>
+</body>
+</html>
